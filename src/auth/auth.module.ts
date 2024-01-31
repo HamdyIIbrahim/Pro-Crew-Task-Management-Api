@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { DatabaseModule } from 'src/database/database.module';
 import { usersProviders } from './schemas/user.providers';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from 'src/strategy';
+import { JwtStrategy } from 'src/auth/strategy';
 
 @Module({
   imports: [DatabaseModule, JwtModule.register({})],
