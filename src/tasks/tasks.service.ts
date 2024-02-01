@@ -68,6 +68,7 @@ export class TasksService {
     if (!task) {
       return { message: 'Task not found' };
     }
+
     return { message: 'Task started', task };
   }
 
@@ -84,7 +85,8 @@ export class TasksService {
       {
         $set: {
           clockOut,
-          timeSpentOnTask: this.calculateTimeDifference(clockIn, clockOut),
+          timeSpentOnTask:
+            clockOut.getTime() - clockIn.getTime() + task.timeSpentOnTask,
           status: taskStatus.COMPELETED,
         },
       },

@@ -33,7 +33,7 @@ export interface TaskData {
   user?: string;
   clockIn?: string;
   clockOut?: string;
-  timeSpentOnTask?: string;
+  timeSpentOnTask?: number;
   createdAt?: string;
   updatedAt?: string;
 }

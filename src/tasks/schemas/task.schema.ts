@@ -27,7 +27,8 @@ export const TaskSchema = new Schema(
       type: Date,
     },
     timeSpentOnTask: {
-      type: String,
+      type: Number,
+      default: 0,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -45,7 +46,7 @@ TaskSchema.index({ title: 'text' });
 export interface Task extends mongoose.Document {
   title: string;
   status: string;
-  timeSpentOnTask?: string;
+  timeSpentOnTask?: number;
   user: ObjectId;
   priority?: number;
 }
