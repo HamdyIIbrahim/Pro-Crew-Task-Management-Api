@@ -48,4 +48,9 @@ export class TasksController {
     const user = req.user;
     return this.tasksService.searchTasksByTitle(user as UserInfo, title);
   }
+
+  @Patch('/start-task/:id')
+  startTask(@Param('id') id: string) {
+    return this.tasksService.startTask(id);
+  }
 }

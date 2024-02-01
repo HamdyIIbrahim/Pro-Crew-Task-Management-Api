@@ -1,6 +1,6 @@
 import mongoose, { ObjectId } from 'mongoose';
 const Schema = mongoose.Schema;
-const taskStatus = {
+export const taskStatus = {
   COMPELETED: 'completed',
   INPROGRESS: 'progress',
   PENDING: 'pending',
@@ -12,7 +12,6 @@ export const TaskSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      lowercase: true,
     },
     status: {
       type: String,
@@ -20,8 +19,14 @@ export const TaskSchema = new Schema(
       enum: Object.values(taskStatus),
       default: taskStatus.PENDING,
     },
+    clockIn: {
+      type: Date,
+    },
+    clockOut: {
+      type: Date,
+    },
     timeSpentOnTask: {
-      type: Number,
+      type: String,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -39,7 +44,7 @@ TaskSchema.index({ title: 'text' });
 export interface Task extends mongoose.Document {
   title: string;
   status: string;
-  timeSpentOnTask?: number;
+  timeSpentOnTask?: string;
   user: ObjectId;
   priority?: number;
 }

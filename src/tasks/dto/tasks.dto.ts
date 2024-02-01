@@ -25,3 +25,15 @@ export class UpdateTaskDto {
   @IsNumber()
   priority?: number;
 }
+
+export interface TaskData {
+  _id?: string;
+  title?: string;
+  status?: string;
+  user?: string;
+  clockIn?: string;
+  clockOut?: string;
+  timeSpentOnTask?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

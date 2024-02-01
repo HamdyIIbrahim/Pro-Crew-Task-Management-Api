@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Task } from './schemas/task.schema';
-import { CreateTaskDto, UpdateTaskDto, UserInfo } from './dto';
+import { Task, taskStatus } from './schemas/task.schema';
+import { CreateTaskDto, TaskData, UpdateTaskDto, UserInfo } from './dto';
 
 @Injectable()
 export class TasksService {
@@ -48,5 +48,56 @@ export class TasksService {
       user: user.id,
     });
     return { task };
+  }
+
+  async startTask(id: string) {
+    const task = await this.taskModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        clockIn: new Date(Date.now()),
+        status: taskStatus.INPROGRESS,
+      },
+    );
+    if (!task) {
+      return { message: 'Task not found' };
+    }
+    return { message: 'Task started', task };
+  }
+
+  async endTask(id: string) {
+    const task: TaskData = await this.taskModel.findOne({ _id: id });
+
+    if (!task) {
+      return { message: 'Task not found' };
+    }
+    const clockIn = new Date(task.clockIn);
+    const clockOut = new Date(Date.now());
+    const updatedTask = await this.taskModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          clockOut: new Date(),
+          timeSpentOnTask: this.calculateTimeDifference(clockIn, clockOut),
+          status: taskStatus.COMPELETED,
+        },
+      },
+      { new: true },
+    );
+
+    return { message: 'Task ended', task: updatedTask };
+  }
+  private padZero(num: number): string {
+    return num < 10 ? `0${num}` : num.toString();
+  }
+  private calculateTimeDifference(startDate: Date, endDate: Date): string {
+    const diffInMillisec = endDate.getTime() - startDate.getTime();
+
+    const hours = Math.floor(diffInMillisec / 3600000);
+    const minutes = Math.floor((diffInMillisec % 3600000) / 60000);
+    const seconds = Math.floor((diffInMillisec % 60000) / 1000);
+
+    const formattedTime = `${this.padZero(hours)}:${this.padZero(minutes)}:${this.padZero(seconds)}`;
+
+    return formattedTime;
   }
 }
