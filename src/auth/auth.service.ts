@@ -41,11 +41,15 @@ export class AuthService {
     if (!pwMatch) {
       throw new ForbiddenException('Invalid email or password');
     }
-
-    return this.generateToken(user._id, user.email);
+    const token = await this.generateToken(user._id, user.email);
+    return {
+      name: user.name,
+      photo: user.photo,
+      token,
+    };
   }
 
-  async generateToken(id: ObjectId, email: string): Promise<{ token: string }> {
+  async generateToken(id: ObjectId, email: string): Promise<string> {
     const payload = {
       id: id,
       email: email,
@@ -57,6 +61,6 @@ export class AuthService {
       secret: secret,
     });
 
-    return { token };
+    return token;
   }
 }
