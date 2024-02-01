@@ -37,3 +37,14 @@ export interface TaskData {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export class StartTaskDto {
+  @IsNotEmpty()
+  @IsString()
+  clockIn: string;
+}
+export class EndTaskDto {
+  @IsNotEmpty()
+  @IsString()
+  clockOut: string;
+}

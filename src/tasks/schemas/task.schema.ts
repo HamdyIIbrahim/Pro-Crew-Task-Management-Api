@@ -1,9 +1,10 @@
 import mongoose, { ObjectId } from 'mongoose';
 const Schema = mongoose.Schema;
+
 export const taskStatus = {
-  COMPELETED: 'completed',
-  INPROGRESS: 'progress',
-  PENDING: 'pending',
+  COMPELETED: 'Completed',
+  INPROGRESS: 'In progress',
+  PENDING: 'Pending',
 };
 
 export const TaskSchema = new Schema(

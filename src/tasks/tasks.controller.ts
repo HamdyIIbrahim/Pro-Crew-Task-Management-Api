@@ -13,7 +13,13 @@ import {
 import { TasksService } from './tasks.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { CreateTaskDto, UpdateTaskDto, UserInfo } from './dto';
+import {
+  CreateTaskDto,
+  EndTaskDto,
+  StartTaskDto,
+  UpdateTaskDto,
+  UserInfo,
+} from './dto';
 import { Task } from './schemas/task.schema';
 
 @Controller('tasks')
@@ -50,7 +56,12 @@ export class TasksController {
   }
 
   @Patch('/start-task/:id')
-  startTask(@Param('id') id: string) {
-    return this.tasksService.startTask(id);
+  startTask(@Param('id') id: string, @Body() startTask: StartTaskDto) {
+    return this.tasksService.startTask(id, startTask);
+  }
+
+  @Patch('/end-task/:id')
+  endTask(@Param('id') id: string, @Body() endTask: EndTaskDto) {
+    return this.tasksService.endTask(id, endTask);
   }
 }

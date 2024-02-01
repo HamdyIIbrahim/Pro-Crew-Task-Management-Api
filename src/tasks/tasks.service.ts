@@ -1,7 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Task, taskStatus } from './schemas/task.schema';
-import { CreateTaskDto, TaskData, UpdateTaskDto, UserInfo } from './dto';
+import {
+  CreateTaskDto,
+  EndTaskDto,
+  StartTaskDto,
+  TaskData,
+  UpdateTaskDto,
+  UserInfo,
+} from './dto';
 
 @Injectable()
 export class TasksService {
@@ -50,11 +57,11 @@ export class TasksService {
     return { task };
   }
 
-  async startTask(id: string) {
+  async startTask(id: string, startTask: StartTaskDto) {
     const task = await this.taskModel.findByIdAndUpdate(
       { _id: id },
       {
-        clockIn: new Date(Date.now()),
+        clockIn: new Date(startTask.clockIn),
         status: taskStatus.INPROGRESS,
       },
     );
@@ -64,19 +71,19 @@ export class TasksService {
     return { message: 'Task started', task };
   }
 
-  async endTask(id: string) {
+  async endTask(id: string, endTask: EndTaskDto) {
     const task: TaskData = await this.taskModel.findOne({ _id: id });
 
     if (!task) {
       return { message: 'Task not found' };
     }
     const clockIn = new Date(task.clockIn);
-    const clockOut = new Date(Date.now());
+    const clockOut = new Date(endTask.clockOut);
     const updatedTask = await this.taskModel.findByIdAndUpdate(
       id,
       {
         $set: {
-          clockOut: new Date(),
+          clockOut,
           timeSpentOnTask: this.calculateTimeDifference(clockIn, clockOut),
           status: taskStatus.COMPELETED,
         },
@@ -84,7 +91,7 @@ export class TasksService {
       { new: true },
     );
 
-    return { message: 'Task ended', task: updatedTask };
+    return { message: 'Task Completed', task: updatedTask };
   }
   private padZero(num: number): string {
     return num < 10 ? `0${num}` : num.toString();
