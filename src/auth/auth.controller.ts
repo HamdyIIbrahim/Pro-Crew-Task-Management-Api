@@ -1,16 +1,20 @@
 import {
   Body,
   Controller,
+  HttpCode,
   Post,
   UploadedFile,
+  UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto, FileDto, LoginDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { upload } from 'src/shared/cloudinary';
+import { MongoExceptionFilter } from 'src/shared/errorHandler';
 
 @Controller('auth')
+@UseFilters(MongoExceptionFilter)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -26,6 +30,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(200)
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }

@@ -54,6 +54,13 @@ export class TasksService {
       $text: { $search: title },
       user: user.id,
     });
+
+    if (title === '') {
+      const tasks = await this.taskModel.find({
+        user: user.id,
+      });
+      return { task: tasks };
+    }
     return { task };
   }
 
@@ -85,8 +92,9 @@ export class TasksService {
       {
         $set: {
           clockOut,
-          timeSpentOnTask:
+          timeSpentOnTask: Number(
             clockOut.getTime() - clockIn.getTime() + task.timeSpentOnTask,
+          ),
           status: taskStatus.COMPELETED,
         },
       },

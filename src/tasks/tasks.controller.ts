@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Req,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
@@ -20,10 +21,11 @@ import {
   UpdateTaskDto,
   UserInfo,
 } from './dto';
-import { Task } from './schemas/task.schema';
+import { MongoExceptionFilter } from 'src/shared/errorHandler';
 
 @Controller('tasks')
 @UseGuards(AuthGuard('jwt'))
+@UseFilters(MongoExceptionFilter)
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 

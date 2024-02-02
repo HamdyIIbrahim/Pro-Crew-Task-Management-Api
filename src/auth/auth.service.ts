@@ -32,6 +32,7 @@ export class AuthService {
     const user = await this.userModel.findOne({
       email: dto.email,
     });
+
     if (!user) {
       throw new ForbiddenException('Invalid email or password');
     }

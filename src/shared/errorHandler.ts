@@ -2,33 +2,23 @@ import {
   ExceptionFilter,
   Catch,
   ArgumentsHost,
-  HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
+import { MongoError } from 'mongodb';
 
-@Catch()
-export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+@Catch(MongoError)
+export class MongoExceptionFilter implements ExceptionFilter {
+  catch(exception: MongoError, host: ArgumentsHost) {
+    const response = host.switchToHttp().getResponse();
 
-  catch(exception: unknown, host: ArgumentsHost): void {
-    const { httpAdapter } = this.httpAdapterHost;
-
-    const ctx = host.switchToHttp();
-
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
-    const message =
-      exception instanceof HttpException
-        ? exception.message
-        : 'Internal Server Error';
-    const responseBody = {
-      statusCode: httpStatus,
-      message,
-    };
-
-    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+    if (exception.code === 11000) {
+      response.status(HttpStatus.CONFLICT).json({
+        message: 'Duplicate key error.',
+      });
+    } else {
+      response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: 'Internal server error.',
+      });
+    }
   }
 }
