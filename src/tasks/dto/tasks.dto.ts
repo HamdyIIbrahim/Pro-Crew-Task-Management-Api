@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ObjectId } from 'mongoose';
 
 export interface UserInfo {
@@ -12,8 +12,8 @@ export class CreateTaskDto {
   title: string;
 
   @IsOptional()
-  @IsNumber()
-  priority?: number;
+  @IsString()
+  priority?: string;
 }
 
 export class UpdateTaskDto {
@@ -22,8 +22,8 @@ export class UpdateTaskDto {
   title?: string;
 
   @IsOptional()
-  @IsNumber()
-  priority?: number;
+  @IsString()
+  priority?: string;
 }
 
 export interface TaskData {
@@ -34,6 +34,7 @@ export interface TaskData {
   clockIn?: string;
   clockOut?: string;
   timeSpentOnTask?: number;
+  priority?: string;
   createdAt?: string;
   updatedAt?: string;
 }

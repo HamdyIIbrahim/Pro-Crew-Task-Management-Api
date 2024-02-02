@@ -49,13 +49,17 @@ export class TasksService {
     return { message: 'Task deleted successfully' };
   }
 
-  async searchTasksByTitle(user: UserInfo, title: string) {
+  async searchTasksFilter(user: UserInfo, value: string) {
     const task = await this.taskModel.find({
-      $text: { $search: title },
+      $or: [
+        { title: { $regex: value, $options: 'i' } },
+        { status: { $regex: value, $options: 'i' } },
+        { priority: { $regex: value, $options: 'i' } },
+      ],
       user: user.id,
     });
 
-    if (title === '') {
+    if (value === '') {
       const tasks = await this.taskModel.find({
         user: user.id,
       });

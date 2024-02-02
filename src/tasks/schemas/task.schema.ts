@@ -2,9 +2,15 @@ import mongoose, { ObjectId } from 'mongoose';
 const Schema = mongoose.Schema;
 
 export const taskStatus = {
-  COMPELETED: 'Completed',
-  INPROGRESS: 'In progress',
-  PENDING: 'Pending',
+  COMPELETED: 'completed',
+  INPROGRESS: 'in progress',
+  PENDING: 'pending',
+};
+
+export const taskPrioritys = {
+  HIGH: 'high',
+  MEDIUM: 'medium',
+  LOW: 'low',
 };
 
 export const TaskSchema = new Schema(
@@ -35,7 +41,9 @@ export const TaskSchema = new Schema(
       ref: 'User',
     },
     priority: {
-      type: Number,
+      type: String,
+      enum: Object.values(taskPrioritys),
+      default: taskPrioritys.LOW,
     },
   },
   { timestamps: true },
@@ -48,5 +56,5 @@ export interface Task extends mongoose.Document {
   status: string;
   timeSpentOnTask?: number;
   user: ObjectId;
-  priority?: number;
+  priority?: string;
 }

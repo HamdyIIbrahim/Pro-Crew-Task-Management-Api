@@ -52,9 +52,9 @@ export class TasksController {
   }
 
   @Get('/search')
-  searchTasks(@Req() req: Request, @Query('title') title: string) {
+  searchTasks(@Req() req: Request, @Query('value') value: string) {
     const user = req.user;
-    return this.tasksService.searchTasksByTitle(user as UserInfo, title);
+    return this.tasksService.searchTasksFilter(user as UserInfo, value);
   }
 
   @Patch('/start-task/:id')
